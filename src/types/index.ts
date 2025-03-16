@@ -41,6 +41,10 @@ export interface Process {
       avgResponseTime: number;
     };
   }
+
+  export interface ResultsMap {
+    [key: string]: AlgorithmResult;
+  }
   
   // Algorithm names
   export type AlgorithmType = 'FIFO' | 'SJF' | 'STCF' | 'RR' | 'MLFQ' | 'all';
