@@ -60,8 +60,6 @@ const ScheduleSim = () => {
           default:
             result = runFIFO(processes);
         }
-        console.log("Algorithm result:", result);
-        
         setResults(prevResults => {
           const newResults = {
             ...prevResults,
@@ -164,15 +162,6 @@ const ScheduleSim = () => {
         )
       )}
       
-      {/* Debug display */}
-      <div className="mt-4 p-2 border border-gray-300 bg-gray-100 rounded">
-        <p><strong>Debug Info:</strong></p>
-        <p>Selected Algorithm: {selectedAlgorithm}</p>
-        <p>Is Running: {isRunning ? 'Yes' : 'No'}</p>
-        <p>Process Count: {processes.length}</p>
-        <p>Has Results: {results[selectedAlgorithm] ? 'Yes' : 'No'}</p>
-        <p>Show Comparison: {showComparison ? 'Yes' : 'No'}</p>
-      </div>
     </div>
   );
 };
