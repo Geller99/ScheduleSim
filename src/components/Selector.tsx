@@ -23,7 +23,8 @@ const AlgorithmSelector: React.FC<AlgorithmSelectorProps> = ({
     { value: 'FIFO', label: 'First In First Out (FIFO)', description: 'Processes are executed in the order they arrive. Non-preemptive.' },
     { value: 'SJF', label: 'Shortest Job First (SJF)', description: 'Processes with the shortest burst time are executed first. Non-preemptive.' },
     { value: 'STCF', label: 'Shortest Time-to-Completion First (STCF)', description: 'Preemptive version of SJF. Processes with shortest remaining time are prioritized.' },
-    // Other algorithms will be added here when implemented
+    { value: 'RR', label: 'Round Robin (RR)', description: 'Each process gets a fixed time slice in a circular manner. Preemptive.' },
+    // Only MLFQ left to implement
   ];
   
   const handleButtonClick = () => {
