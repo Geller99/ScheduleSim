@@ -6,6 +6,7 @@ import AlgorithmResults from './components/Results';
 import { Process, AlgorithmResult, AlgorithmType, ResultsMap } from './types';
 import { runFIFO } from './lib/algorithms/fifo';
 import { runSJF } from './lib/algorithms/sjf';
+import { runSTCF } from './lib/algorithms/stcf';
 
 const ScheduleSim = () => {
   const [numProcesses, setNumProcesses] = useState<number>(5);
@@ -39,6 +40,9 @@ const ScheduleSim = () => {
             break;
           case 'SJF':
             result = runSJF(processes);
+            break;
+          case 'STCF':
+            result = runSTCF(processes);
             break;
           default:
             result = runFIFO(processes);
