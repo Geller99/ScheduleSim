@@ -22,25 +22,16 @@ const ScheduleSim = () => {
 
 
   const handleRunAlgorithm = () => {
-    console.log("Run algorithm button clicked");
-    console.log("Current processes:", processes);
-    console.log("Is running:", isRunning);
-    
     if (!processes.length || isRunning) {
-      console.log("Cannot run algorithm:", !processes.length ? "No processes" : "Already running");
       return;
     }
-    
-    console.log("Starting algorithm execution:", selectedAlgorithm);
     setIsRunning(true);
     setShowComparison(false);
     
     setTimeout(() => {
-      console.log("Inside setTimeout callback");
       let result: AlgorithmResult;
       
       try {
-        console.log("Executing algorithm:", selectedAlgorithm);
         switch (selectedAlgorithm) {
           case 'FIFO':
             result = runFIFO(processes);
@@ -65,13 +56,11 @@ const ScheduleSim = () => {
             ...prevResults,
             [selectedAlgorithm]: result
           };
-          console.log("Setting new results:", newResults);
           return newResults;
         });
       } catch (error) {
         console.error("Error running algorithm:", error);
       } finally {
-        console.log("Setting isRunning to false");
         setIsRunning(false);
       }
     }, 100);
