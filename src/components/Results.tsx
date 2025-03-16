@@ -1,24 +1,46 @@
-// src/components/AlgorithmResults.tsx
-
 import React from 'react';
-import { AlgorithmResult } from '../types';
+import { AlgorithmResult, Process } from '../types';
+import { generatePDF } from '../lib/pdfutils';
+
 
 interface AlgorithmResultsProps {
   result: AlgorithmResult;
   algorithmName: string;
+  processes: Process[];
+  timeQuantum?: number;
 }
 
 const AlgorithmResults: React.FC<AlgorithmResultsProps> = ({ 
   result, 
-  algorithmName 
+  algorithmName,
+  processes,
+  timeQuantum
 }) => {
   if (!result) return null;
   
+  const handleDownloadPDF = () => {
+    const algorithmKey = algorithmName.split(' ')[0]; 
+    const resultsMap = {
+      [algorithmKey]: result
+    };
+    generatePDF(resultsMap, processes, timeQuantum);
+  };
+  
   return (
     <div className="mt-8 p-4 bg-white rounded-lg shadow">
-      <h2 className="text-xl font-semibold mb-4">{algorithmName} Results</h2>
-      
-      {/* Performance Metrics */}
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold">{algorithmName} Results</h2>
+        <button
+          onClick={handleDownloadPDF}
+          className="px-4 py-2 bg-indigo-600 text-black rounded-md hover:bg-indigo-700 flex items-center"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
+          Download PDF
+        </button>
+      </div>
+
       <div className="mb-6">
         <h3 className="text-lg font-medium mb-2">Performance Metrics</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -42,7 +64,6 @@ const AlgorithmResults: React.FC<AlgorithmResultsProps> = ({
         <h3 className="text-lg font-medium mb-2">Gantt Chart</h3>
         <div className="overflow-x-auto">
           <div className="relative h-16" style={{ minWidth: '100%', width: `${Math.max(result.ganttChart[result.ganttChart.length - 1].end * 50, 500)}px` }}>
-            {/* Time markers */}
             {Array.from({ length: result.ganttChart[result.ganttChart.length - 1].end + 1 }).map((_, i) => (
               <div 
                 key={i} 
@@ -67,14 +88,14 @@ const AlgorithmResults: React.FC<AlgorithmResultsProps> = ({
                 }}
               >
                 {item.id}
-                {item.queue && ` (Q${item.queue})`} {/* For MLFQ */}
+                {item.queue && ` (Q${item.queue})`}
               </div>
             ))}
           </div>
         </div>
       </div>
       
-      {/* Process Results Table */}
+      {/* Process Details */}
       <div>
         <h3 className="text-lg font-medium mb-2">Process Details</h3>
         <div className="overflow-x-auto">

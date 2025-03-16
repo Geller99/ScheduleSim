@@ -1,15 +1,15 @@
-// src/components/AlgorithmComparison.tsx
-
 import React from 'react';
-import { ResultsMap } from '../types';
+import { ResultsMap, Process } from '../types';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
+import { generatePDF } from '../lib/pdfutils';
 
 interface AlgorithmComparisonProps {
   results: ResultsMap;
+  processes: Process[];
+  timeQuantum?: number;
 }
 
-// Helper function to get label for algorithm
 const getAlgorithmName = (key: string): string => {
   switch (key) {
     case 'FIFO': return 'First In First Out';
@@ -21,14 +21,21 @@ const getAlgorithmName = (key: string): string => {
   }
 };
 
-const AlgorithmComparison: React.FC<AlgorithmComparisonProps> = ({ results }) => {
+const AlgorithmComparison: React.FC<AlgorithmComparisonProps> = ({ 
+  results,
+  processes,
+  timeQuantum
+}) => {
   if (!results || Object.keys(results).length === 0) {
     return null;
   }
   
   const algorithms = Object.keys(results);
   
-  // Prepare data for Chart.js
+  const handleDownloadPDF = () => {
+    generatePDF(results, processes, timeQuantum);
+  };
+  
   const chartData = {
     labels: algorithms.map(getAlgorithmName),
     datasets: [
@@ -74,14 +81,23 @@ const AlgorithmComparison: React.FC<AlgorithmComparisonProps> = ({ results }) =>
   
   return (
     <div className="mt-8 p-4 bg-white rounded-lg shadow">
-      <h2 className="text-xl font-semibold mb-6">Algorithm Comparison</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold">Algorithm Comparison</h2>
+        <button
+          onClick={handleDownloadPDF}
+          className="px-4 py-2 bg-indigo-600 text-black rounded-md hover:bg-indigo-700 flex items-center"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
+          Download Comparison PDF
+        </button>
+      </div>
       
-      {/* Performance Metrics Comparison Chart */}
       <div className="mb-8 h-96">
         <Bar data={chartData} options={chartOptions} />
       </div>
       
-      {/* Metrics Comparison Table */}
       <div className="mb-8 overflow-x-auto">
         <table className="min-w-full border border-gray-300">
           <thead>
@@ -105,7 +121,6 @@ const AlgorithmComparison: React.FC<AlgorithmComparisonProps> = ({ results }) =>
         </table>
       </div>
       
-      {/* Gantt Charts for Each Algorithm */}
       <div>
         <h3 className="text-lg font-medium mb-4">Gantt Charts</h3>
         {algorithms.map(algo => (

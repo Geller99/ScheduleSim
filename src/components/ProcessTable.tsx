@@ -1,5 +1,3 @@
-// src/components/ProcessTable.tsx
-
 import React, { useState } from 'react';
 import { Process } from '../types';
 
@@ -20,22 +18,17 @@ const ProcessTable: React.FC<ProcessTableProps> = ({ processes }) => {
   
   const handleSort = (field: SortField) => {
     if (field === sortField) {
-      // Toggle sort order if clicking the same field
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
-      // Set new field and default to ascending
       setSortField(field);
       setSortOrder('asc');
     }
   };
   
-  // Create a sorted copy of the processes array
   const sortedProcesses = [...processes].sort((a, b) => {
     let compareResult = 0;
     
-    // Sort based on the selected field
     if (sortField === 'id') {
-      // Extract numeric part of ID for proper numeric sorting
       const aId = parseInt(a.id.replace(/\D/g, ''));
       const bId = parseInt(b.id.replace(/\D/g, ''));
       compareResult = aId - bId;
@@ -45,11 +38,9 @@ const ProcessTable: React.FC<ProcessTableProps> = ({ processes }) => {
       compareResult = a.burstTime - b.burstTime;
     }
     
-    // Apply sort order
     return sortOrder === 'asc' ? compareResult : -compareResult;
   });
   
-  // Helper function to render sort indicators
   const renderSortIndicator = (field: SortField) => {
     if (sortField !== field) return null;
     return sortOrder === 'asc' ? ' ↑' : ' ↓';

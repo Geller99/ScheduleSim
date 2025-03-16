@@ -21,21 +21,20 @@ export interface Process {
     start: number;
     end: number;
     color: string;
-    queue?: number; // For MLFQ visualization
+    queue?: number; 
   }
   
-  // Timeline event for process history
+
   export interface TimelineEvent {
     time: number;
     action: string;
   }
-  
-  // Result structure for algorithm output
+
   export interface AlgorithmResult {
-    processes: Process[];        // Processes with calculated metrics
-    timeline: TimelineEvent[];   // History of events for animation
-    ganttChart: GanttItem[];     // Data for Gantt chart visualization
-    metrics: {                   // Summary statistics
+    processes: Process[];       
+    timeline: TimelineEvent[];  
+    ganttChart: GanttItem[];    
+    metrics: {                   
       avgTurnaroundTime: number;
       avgWaitingTime: number;
       avgResponseTime: number;
@@ -46,5 +45,5 @@ export interface Process {
     [key: string]: AlgorithmResult;
   }
   
-  // Algorithm names
+
   export type AlgorithmType = 'FIFO' | 'SJF' | 'STCF' | 'RR' | 'MLFQ' | 'all';

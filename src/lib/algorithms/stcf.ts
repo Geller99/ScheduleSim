@@ -109,11 +109,11 @@ export const runSTCF = (processes: Process[]): AlgorithmResult => {
       color: currentProcess.color || '#3498db'
     });
     
-    // Update time and remaining time
+ 
     currentTime = runUntil;
     currentProcess.remainingTime! -= executeTime;
     
-    // Check if process has completed
+
     if (currentProcess.remainingTime === 0) {
       currentProcess.completionTime = currentTime;
       currentProcess.turnaroundTime = currentProcess.completionTime - currentProcess.arrivalTime;
@@ -136,7 +136,6 @@ export const runSTCF = (processes: Process[]): AlgorithmResult => {
     previousProcess = currentProcess;
   }
   
-  // Calculate average metrics
   const avgTurnaroundTime = processesCopy.reduce((sum, p) => sum + (p.turnaroundTime || 0), 0) / processesCopy.length;
   const avgWaitingTime = processesCopy.reduce((sum, p) => sum + (p.waitingTime || 0), 0) / processesCopy.length;
   const avgResponseTime = processesCopy.reduce((sum, p) => sum + (p.responseTime || 0), 0) / processesCopy.length;

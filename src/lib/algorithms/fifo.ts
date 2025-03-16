@@ -1,9 +1,7 @@
-// src/lib/algorithms/fifo.ts
 import { Process, AlgorithmResult, GanttItem, TimelineEvent } from '../../types';
 import { prepareProcesses } from '../processUtils';
 
 export const runFIFO = (processes: Process[]): AlgorithmResult => {
-  // Make a copy of processes to avoid modifying original
   const processesCopy = prepareProcesses(processes);
   let currentTime = 0;
   const timeline: TimelineEvent[] = [];
@@ -42,15 +40,13 @@ export const runFIFO = (processes: Process[]): AlgorithmResult => {
       color: process.color || '#3498db'
     });
     
-    // Update time
     currentTime += process.burstTime;
-    
-    // Calculate metrics
+  
+
     process.completionTime = currentTime;
     process.turnaroundTime = process.completionTime - process.arrivalTime;
     process.waitingTime = process.turnaroundTime - process.burstTime;
     
-    // Record completion in timeline
     timeline.push({
       time: currentTime,
       action: `Process ${process.id} completes execution`

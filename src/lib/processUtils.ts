@@ -1,5 +1,3 @@
-// src/lib/processUtils.ts
-
 import { Process } from '../types';
 
 /**

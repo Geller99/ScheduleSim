@@ -1,5 +1,3 @@
-// src/components/Controls.tsx
-
 import React from 'react';
 import { Process } from '../types';
 import { generateProcesses } from '../lib/processUtils';

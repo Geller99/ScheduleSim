@@ -20,16 +20,27 @@ const ScheduleSim = () => {
   const [results, setResults] = useState<ResultsMap>({});
   const [showComparison, setShowComparison] = useState<boolean>(false);
 
+
   const handleRunAlgorithm = () => {
-    if (!processes.length || isRunning) return;
+    console.log("Run algorithm button clicked");
+    console.log("Current processes:", processes);
+    console.log("Is running:", isRunning);
     
+    if (!processes.length || isRunning) {
+      console.log("Cannot run algorithm:", !processes.length ? "No processes" : "Already running");
+      return;
+    }
+    
+    console.log("Starting algorithm execution:", selectedAlgorithm);
     setIsRunning(true);
     setShowComparison(false);
     
     setTimeout(() => {
+      console.log("Inside setTimeout callback");
       let result: AlgorithmResult;
       
       try {
+        console.log("Executing algorithm:", selectedAlgorithm);
         switch (selectedAlgorithm) {
           case 'FIFO':
             result = runFIFO(processes);
@@ -49,14 +60,20 @@ const ScheduleSim = () => {
           default:
             result = runFIFO(processes);
         }
+        console.log("Algorithm result:", result);
         
-        setResults(prevResults => ({
-          ...prevResults,
-          [selectedAlgorithm]: result
-        }));
+        setResults(prevResults => {
+          const newResults = {
+            ...prevResults,
+            [selectedAlgorithm]: result
+          };
+          console.log("Setting new results:", newResults);
+          return newResults;
+        });
       } catch (error) {
         console.error("Error running algorithm:", error);
       } finally {
+        console.log("Setting isRunning to false");
         setIsRunning(false);
       }
     }, 100);
@@ -66,6 +83,7 @@ const ScheduleSim = () => {
     if (!processes.length || isRunning) return;
     
     setIsRunning(true);
+    
     setTimeout(() => {
       try {
         const allResults: ResultsMap = {
@@ -90,7 +108,7 @@ const ScheduleSim = () => {
     setResults({});
     setShowComparison(false);
   };
-  
+
   const getAlgorithmName = (type: AlgorithmType): string => {
     switch (type) {
       case 'FIFO': return 'First In First Out (FIFO)';
@@ -130,15 +148,31 @@ const ScheduleSim = () => {
       />
       
       {showComparison ? (
-        <AlgorithmComparison results={results} />
+        <AlgorithmComparison 
+          results={results}
+          processes={processes}
+          timeQuantum={timeQuantum}
+        />
       ) : (
         results[selectedAlgorithm] && (
           <AlgorithmResults 
             result={results[selectedAlgorithm]}
             algorithmName={getAlgorithmName(selectedAlgorithm)}
+            processes={processes}
+            timeQuantum={timeQuantum}
           />
         )
       )}
+      
+      {/* Debug display */}
+      <div className="mt-4 p-2 border border-gray-300 bg-gray-100 rounded">
+        <p><strong>Debug Info:</strong></p>
+        <p>Selected Algorithm: {selectedAlgorithm}</p>
+        <p>Is Running: {isRunning ? 'Yes' : 'No'}</p>
+        <p>Process Count: {processes.length}</p>
+        <p>Has Results: {results[selectedAlgorithm] ? 'Yes' : 'No'}</p>
+        <p>Show Comparison: {showComparison ? 'Yes' : 'No'}</p>
+      </div>
     </div>
   );
 };
