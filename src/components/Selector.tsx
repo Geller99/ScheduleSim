@@ -1,5 +1,3 @@
-// src/components/Selector.tsx
-
 import React from 'react';
 import { AlgorithmType } from '../types';
 
@@ -7,30 +5,32 @@ interface AlgorithmSelectorProps {
   selectedAlgorithm: AlgorithmType;
   setSelectedAlgorithm: (algorithm: AlgorithmType) => void;
   onRunAlgorithm: () => void;
+  onRunAllAlgorithms: () => void;  
+  onClearResults: () => void;      
   isRunning: boolean;
   hasProcesses: boolean;
+  hasResults: boolean;            
 }
 
 const AlgorithmSelector: React.FC<AlgorithmSelectorProps> = ({
   selectedAlgorithm,
   setSelectedAlgorithm,
   onRunAlgorithm,
+  onRunAllAlgorithms,
+  onClearResults,
   isRunning,
-  hasProcesses
+  hasProcesses,
+  hasResults
 }) => {
-  
+
+
   const algorithms = [
     { value: 'FIFO', label: 'First In First Out (FIFO)', description: 'Processes are executed in the order they arrive. Non-preemptive.' },
     { value: 'SJF', label: 'Shortest Job First (SJF)', description: 'Processes with the shortest burst time are executed first. Non-preemptive.' },
     { value: 'STCF', label: 'Shortest Time-to-Completion First (STCF)', description: 'Preemptive version of SJF. Processes with shortest remaining time are prioritized.' },
     { value: 'RR', label: 'Round Robin (RR)', description: 'Each process gets a fixed time slice in a circular manner. Preemptive.' },
-    // Only MLFQ left to implement
+    { value: 'MLFQ', label: 'Multi-Level Feedback Queue (MLFQ)', description: 'Uses multiple priority queues with different time quantums. Processes move between queues based on behavior.' }
   ];
-  
-  const handleButtonClick = () => {
-    onRunAlgorithm();
-  };
-  
   return (
     <div className="mt-8 p-4 bg-white rounded-lg shadow">
       <h2 className="text-xl font-semibold mb-4">Algorithm Selection</h2>
@@ -59,9 +59,9 @@ const AlgorithmSelector: React.FC<AlgorithmSelectorProps> = ({
         ))}
       </div>
       
-      <div className="mt-6">
+      <div className="mt-6 flex flex-wrap gap-3">
         <button
-          onClick={handleButtonClick}
+          onClick={onRunAlgorithm}
           disabled={isRunning || !hasProcesses}
           className={`px-4 py-2 rounded-md text-black ${
             !hasProcesses || isRunning
@@ -70,6 +70,30 @@ const AlgorithmSelector: React.FC<AlgorithmSelectorProps> = ({
           }`}
         >
           {isRunning ? 'Running...' : `Run ${selectedAlgorithm} Algorithm`}
+        </button>
+        
+        <button
+          onClick={onRunAllAlgorithms}
+          disabled={isRunning || !hasProcesses}
+          className={`px-4 py-2 rounded-md text-black ${
+            !hasProcesses || isRunning
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-green-500 hover:bg-green-600'
+          }`}
+        >
+          {isRunning ? 'Running...' : 'Run All Algorithms'}
+        </button>
+        
+        <button
+          onClick={onClearResults}
+          disabled={!hasResults || isRunning}
+          className={`px-4 py-2 rounded-md text-black ${
+            !hasResults || isRunning
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-red-500 hover:bg-red-600'
+          }`}
+        >
+          Clear Results
         </button>
       </div>
     </div>

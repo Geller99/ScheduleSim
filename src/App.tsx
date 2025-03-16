@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import Controls from './components/Controls';
 import ProcessTable from './components/ProcessTable';
-import AlgorithmSelector from './components/Selector';
+import Selector from './components/Selector';
 import AlgorithmResults from './components/Results';
+import AlgorithmComparison from './components/Comparison';
 import { Process, AlgorithmResult, AlgorithmType, ResultsMap } from './types';
 import { runFIFO } from './lib/algorithms/fifo';
 import { runSJF } from './lib/algorithms/sjf';
 import { runSTCF } from './lib/algorithms/stcf';
 import { runRR } from './lib/algorithms/rr';
+import { runMLFQ } from './lib/algorithms/mlfq';
 
 const ScheduleSim = () => {
   const [numProcesses, setNumProcesses] = useState<number>(5);
@@ -16,25 +18,18 @@ const ScheduleSim = () => {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<AlgorithmType>('FIFO');
   const [results, setResults] = useState<ResultsMap>({});
-
+  const [showComparison, setShowComparison] = useState<boolean>(false);
 
   const handleRunAlgorithm = () => {
-    console.log("Run algorithm button clicked");
-    console.log("Current processes:", processes);
-    console.log("Is running:", isRunning);
-    
-    if (!processes.length || isRunning) {
-      console.log("Cannot run algorithm:", !processes.length ? "No processes" : "Already running");
-      return;
-    }
+    if (!processes.length || isRunning) return;
     
     setIsRunning(true);
+    setShowComparison(false);
     
     setTimeout(() => {
       let result: AlgorithmResult;
       
       try {
-        console.log("Executing algorithm:", selectedAlgorithm);
         switch (selectedAlgorithm) {
           case 'FIFO':
             result = runFIFO(processes);
@@ -48,27 +43,54 @@ const ScheduleSim = () => {
           case 'RR':
             result = runRR(processes, timeQuantum);
             break;
+          case 'MLFQ':
+            result = runMLFQ(processes);
+            break;
           default:
             result = runFIFO(processes);
         }
         
-        setResults(prevResults => {
-          const newResults = {
-            ...prevResults,
-            [selectedAlgorithm]: result
-          };
-          console.log("Setting new results:", newResults);
-          return newResults;
-        });
+        setResults(prevResults => ({
+          ...prevResults,
+          [selectedAlgorithm]: result
+        }));
       } catch (error) {
         console.error("Error running algorithm:", error);
       } finally {
-        console.log("Setting isRunning to false");
         setIsRunning(false);
       }
     }, 100);
   };
-
+  
+  const handleRunAllAlgorithms = () => {
+    if (!processes.length || isRunning) return;
+    
+    setIsRunning(true);
+    setTimeout(() => {
+      try {
+        const allResults: ResultsMap = {
+          'FIFO': runFIFO(processes),
+          'SJF': runSJF(processes),
+          'STCF': runSTCF(processes),
+          'RR': runRR(processes, timeQuantum),
+          'MLFQ': runMLFQ(processes)
+        };
+        
+        setResults(allResults);
+        setShowComparison(true);
+      } catch (error) {
+        console.error("Error running all algorithms:", error);
+      } finally {
+        setIsRunning(false);
+      }
+    }, 100);
+  };
+  
+  const handleClearResults = () => {
+    setResults({});
+    setShowComparison(false);
+  };
+  
   const getAlgorithmName = (type: AlgorithmType): string => {
     switch (type) {
       case 'FIFO': return 'First In First Out (FIFO)';
@@ -96,31 +118,27 @@ const ScheduleSim = () => {
     
       <ProcessTable processes={processes} />
       
-      <AlgorithmSelector 
+      <Selector 
         selectedAlgorithm={selectedAlgorithm}
         setSelectedAlgorithm={setSelectedAlgorithm}
         onRunAlgorithm={handleRunAlgorithm}
+        onRunAllAlgorithms={handleRunAllAlgorithms}
+        onClearResults={handleClearResults}
         isRunning={isRunning}
         hasProcesses={processes.length > 0}
+        hasResults={Object.keys(results).length > 0}
       />
       
-      {results[selectedAlgorithm] && (
-        <div>
+      {showComparison ? (
+        <AlgorithmComparison results={results} />
+      ) : (
+        results[selectedAlgorithm] && (
           <AlgorithmResults 
             result={results[selectedAlgorithm]}
             algorithmName={getAlgorithmName(selectedAlgorithm)}
           />
-        </div>
+        )
       )}
-      
-      {/* Debug display */}
-      {/* <div className="mt-4 p-2 border border-gray-300 bg-gray-100 rounded">
-        <p><strong>Debug Info:</strong></p>
-        <p>Selected Algorithm: {selectedAlgorithm}</p>
-        <p>Is Running: {isRunning ? 'Yes' : 'No'}</p>
-        <p>Process Count: {processes.length}</p>
-        <p>Has Results: {results[selectedAlgorithm] ? 'Yes' : 'No'}</p>
-      </div> */}
     </div>
   );
 };
