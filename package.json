@@ -11,6 +11,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
+  "homepage": "https://Geller99.github.io/ScheduleSim",
   "dependencies": {
     "@tailwindcss/vite": "^4.0.9",
     "chart.js": "^4.4.8",
