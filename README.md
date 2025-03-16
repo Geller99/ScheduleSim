@@ -30,8 +30,7 @@ You can select from a list of algorithms or have the option to select all and ru
 
 ![alt text](image-3.png)
 
-
-## Feature 3 - Running all algorithms
+Running all algorithms
 
 Click on "Generate processes" to generate a number of processes and then click "Run all algorithms" 
 
@@ -41,7 +40,7 @@ We are met with a display of bar charts and gantt charts outlining and comparing
 
 
 
-## Feature 4 - Downloading and Saving Results
+## Feature 3 - Downloading and Saving Results
 Finally, we can save our results to a pdf for either single algorithm instances or after running all algorithms
 
 Comparison PDF
